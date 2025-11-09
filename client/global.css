@@ -1,0 +1,116 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    --background: 240 6% 97%;
+    --foreground: 0 0% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 14%;
+
+    --primary: 199 46% 27%;
+    --primary-foreground: 0 0% 99%;
+
+    --secondary: 202 67% 92%;
+    --secondary-foreground: 199 46% 27%;
+
+    --muted: 202 67% 92%;
+    --muted-foreground: 0 0% 44%;
+
+    --accent: 202 67% 92%;
+    --accent-foreground: 199 46% 27%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 99%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 199 46% 27%;
+
+    --radius: 0.5rem;
+
+    --primary-blue-50: 202 67% 92%;
+    --primary-blue-100: 202 56% 86%;
+    --primary-blue-200: 202 49% 80%;
+    --primary-blue-300: 202 40% 72%;
+    --primary-blue-400: 202 34% 65%;
+    --primary-blue-500: 202 46% 58%;
+    --primary-blue-600: 202 47% 52%;
+    --primary-blue-700: 202 47% 42%;
+    --primary-blue-800: 199 46% 27%;
+    --primary-blue-900: 199 46% 21%;
+    --neutral-white: 0 0% 99%;
+    --neutral-black: 0 0% 14%;
+    --neutral-dark: 0 0% 44%;
+    --neutral-light: 0 0% 83%;
+  }
+
+  .dark {
+    --background: 199 46% 27%;
+    --foreground: 0 0% 99%;
+
+    --card: 199 46% 27%;
+    --card-foreground: 0 0% 99%;
+
+    --popover: 199 46% 27%;
+    --popover-foreground: 0 0% 99%;
+
+    --primary: 0 0% 99%;
+    --primary-foreground: 199 46% 27%;
+
+    --secondary: 199 40% 20%;
+    --secondary-foreground: 0 0% 99%;
+
+    --muted: 199 40% 20%;
+    --muted-foreground: 0 0% 83%;
+
+    --accent: 199 40% 20%;
+    --accent-foreground: 0 0% 99%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 99%;
+
+    --border: 199 40% 20%;
+    --input: 199 40% 20%;
+    --ring: 0 0% 99%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Nunito', -apple-system, Roboto, Helvetica, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', -apple-system, Roboto, Helvetica, sans-serif;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}

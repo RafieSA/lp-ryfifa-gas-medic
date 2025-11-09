@@ -1,0 +1,79 @@
+import { Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Mail, MessageCircle, Facebook } from "lucide-react";
+
+const navItems = [
+  { name: "Beranda", path: "/" },
+  { name: "Tentang", path: "/tentang" },
+  { name: "Produk", path: "/produk" },
+  { name: "Kontak", path: "/kontak" },
+];
+
+export default function Footer() {
+  const location = useLocation();
+
+  return (
+    <footer className="bg-primary-blue-800 py-12 sm:py-16 lg:py-20">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-20 flex flex-col items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:gap-5">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className="flex flex-col items-center gap-2"
+              >
+                <span
+                  className={cn(
+                    "font-nunito text-base sm:text-lg leading-8 transition-colors",
+                    isActive
+                      ? "text-primary-blue-300 font-semibold"
+                      : "text-neutral-white hover:text-primary-blue-200"
+                  )}
+                >
+                  {item.name}
+                </span>
+                {isActive && (
+                  <div className="w-full h-0.5 bg-primary-blue-300 rounded-full" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-3 sm:gap-4">
+          <a
+            href="mailto:info@ryfifagasmedic.com"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
+            aria-label="Email"
+          >
+            <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-primary-blue-800" />
+          </a>
+          <a
+            href="https://wa.me/6281234567890"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
+            aria-label="WhatsApp"
+          >
+            <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[#34A853]" />
+          </a>
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
+            aria-label="Facebook"
+          >
+            <Facebook className="w-5 h-5 sm:w-6 sm:h-6 text-[#3D6AD6]" />
+          </a>
+        </div>
+
+        <p className="text-neutral-white/80 text-center font-nunito text-xs sm:text-sm leading-[18px] px-4 mt-4">
+          Design with love by Team 8, 2025. All right reserved
+        </p>
+      </div>
+    </footer>
+  );
+}
