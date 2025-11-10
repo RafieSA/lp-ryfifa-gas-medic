@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Mail, MessageCircle, Facebook } from "lucide-react";
+import { useSettings } from "@/hooks/use-pocketbase";
 
 const navItems = [
   { name: "Beranda", path: "/" },
@@ -11,6 +12,8 @@ const navItems = [
 
 export default function Footer() {
   const location = useLocation();
+  const { data: settings } = useSettings();
+  const settingsData = settings && settings.length > 0 ? settings[0] : null;
 
   return (
     <footer className="bg-primary-blue-800 py-12 sm:py-16 lg:py-20">
@@ -44,14 +47,14 @@ export default function Footer() {
 
         <div className="flex items-center gap-3 sm:gap-4">
           <a
-            href="mailto:info@ryfifagasmedic.com"
+            href={`mailto:${settingsData?.email || 'info@ryfifagasmedic.com'}`}
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
             aria-label="Email"
           >
             <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-primary-blue-800" />
           </a>
           <a
-            href="https://wa.me/6281234567890"
+            href={`https://wa.me/${settingsData?.whatsapp_number?.replace(/\D/g, '') || '6281234567890'}`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
@@ -60,7 +63,7 @@ export default function Footer() {
             <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[#34A853]" />
           </a>
           <a
-            href="https://facebook.com"
+            href={settingsData?.facebook_url || "https://facebook.com"}
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
