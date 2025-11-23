@@ -68,22 +68,21 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Award, Clock, Package, Wrench, DollarSign, Truck } from "lucide-react";
 import { useBenefits, usePartners, useHeroSection, useSettings, useContact } from "@/hooks/use-pocketbase";
 import { Benefit as PocketBaseBenefit, Partner as PocketBasePartner, Settings } from "@/lib/pocketbase";
 import { Loader2 } from "lucide-react";
 
 /**
- * Mapping icon name dari PocketBase ke Lucide React icon
- * Ini digunakan untuk mengubah string dari database menjadi component icon yang tepat
+ * Mapping icon name dari PocketBase ke icon file di public folder
+ * Ini digunakan untuk mengubah string dari database menjadi path icon yang tepat
  */
-const iconMap = {
-  Award,
-  Package,
-  Truck,
-  Wrench,
-  DollarSign,
-  Clock,
+const iconMap: Record<string, string> = {
+  Award: "/Icon=Best.png",
+  Package: "/Icon=Flexible.png",
+  Truck: "/Icon=Delivery.png",
+  Wrench: "/Icon=Maintenance.png",
+  DollarSign: "/Icon=Price.png",
+  Clock: "/Icon=CS.png", // Fallback untuk Clock
 };
 
 /**
@@ -240,10 +239,10 @@ export default function Index() {
                   </div>
                 )}
 
-                {/* Call to Action Buttons - Menggunakan WhatsApp dari settings */}
+                {/* Call to Action Buttons - Menggunakan WhatsApp link */}
                 <div className="flex flex-wrap gap-4 sm:gap-6">
                   <a
-                    href={`https://wa.me/${settingsData?.whatsapp_number?.replace(/\D/g, '') || '6281234567890'}`}
+                    href="https://wa.link/dxfoj1"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-lg bg-gradient-primary text-neutral-white font-jakarta font-bold text-base sm:text-lg leading-[26px] shadow-lg hover:shadow-xl hover:scale-105 transition-all"
@@ -299,28 +298,29 @@ export default function Index() {
             {/* Benefits Section - Menggunakan data dari PocketBase atau fallback */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-[1280px] mx-auto">
                 {benefitsData && Array.isArray(benefitsData) && benefitsData.map((benefit: PocketBaseBenefit) => {
-                  // Ambil icon berdasarkan icon_name dari PocketBase
-                  const IconComponent = iconMap[benefit.icon_name as keyof typeof iconMap];
-                  
                   return (
                     <div
                       key={benefit.id}
-                      className="bg-white rounded-2xl p-6 sm:p-8 lg:p-10 flex flex-col items-center gap-4 sm:gap-5 text-center"
+                      className="group bg-white rounded-2xl p-6 sm:p-8 lg:p-10 flex flex-col items-center gap-4 sm:gap-5 text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer"
                     >
                       <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center">
-                        {IconComponent ? (
-                          <IconComponent className="w-12 h-12 sm:w-16 sm:h-16 text-[#418BB4]" strokeWidth={1.5} />
+                        {iconMap[benefit.icon_name] ? (
+                          <img
+                            src={iconMap[benefit.icon_name]}
+                            alt={benefit.icon_name}
+                            className="w-12 h-12 sm:w-16 sm:h-16 object-contain transition-all duration-300 group-hover:brightness-0 group-hover:invert"
+                          />
                         ) : (
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-[#418BB4] font-jakarta font-bold text-lg">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center text-[#418BB4] font-jakarta font-bold text-lg transition-colors duration-300 group-hover:text-neutral-white">
                             {benefit.icon_name.charAt(0)}
                           </div>
                         )}
                       </div>
                       <div className="space-y-3 sm:space-y-4">
-                        <h3 className="font-jakarta font-bold text-xl sm:text-2xl lg:text-[28px] leading-tight sm:leading-[38px] text-neutral-black">
+                        <h3 className="font-jakarta font-bold text-xl sm:text-2xl lg:text-[28px] leading-tight sm:leading-[38px] text-neutral-black transition-colors duration-300 group-hover:text-neutral-white">
                           {benefit.title}
                         </h3>
-                        <p className="font-nunito text-base sm:text-lg lg:text-xl leading-relaxed sm:leading-8 text-neutral-dark">
+                        <p className="font-nunito text-base sm:text-lg lg:text-xl leading-relaxed sm:leading-8 text-neutral-dark transition-colors duration-300 group-hover:text-neutral-white">
                           {benefit.description}
                         </p>
                       </div>
@@ -351,12 +351,12 @@ export default function Index() {
               {partnersData && Array.isArray(partnersData) && partnersData.map((partner: PocketBasePartner) => (
                 <div
                   key={partner.id}
-                  className="bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)]"
+                  className="group bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)] transition-all duration-300 hover:shadow-2xl hover:scale-110 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer"
                 >
                   <img
                     src={partner.logo_url}
                     alt={partner.name}
-                    className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain"
+                    className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain transition-all duration-300"
                   />
                 </div>
               ))}

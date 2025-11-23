@@ -32,7 +32,7 @@ Mengganti semua hardcoded data menjadi dynamic dari PocketBase database sambil m
 ## 🛠️ Tools & Libraries yang Digunakan:
 
 ### PocketBase Integration:
-- **`lib/pocketbase.ts`** - API functions layer
+- **`lib/pocketbase.ts`** - API functions layer + File attachments utilities
 - **`hooks/use-pocketbase.ts`** - React Query hooks layer
 
 ### React & UI:
@@ -41,6 +41,10 @@ Mengganti semua hardcoded data menjadi dynamic dari PocketBase database sambil m
 - **TailwindCSS** untuk styling
 - **React Query** untuk data fetching & caching
 - **Radix UI** untuk components
+
+### File Attachments (Aspek):
+- **`getPocketBaseFileUrl()`** - Generate URL untuk file attachment PocketBase
+- **`getPocketBaseFileUrlOrFallback()`** - Generate URL dengan fallback support
 
 ---
 
@@ -85,6 +89,21 @@ export default function Tentang() {
     <p>{heroData?.subtitle || 'Default subtitle'}</p>
   </div>
 )}
+```
+
+### Step 4: Handle File Attachments (Aspek)
+```tsx
+import { getPocketBaseFileUrlOrFallback } from "@/lib/pocketbase";
+
+// Di dalam component
+const imageUrl = getPocketBaseFileUrlOrFallback(
+  'partners',           // Collection ID
+  partner.id,           // Record ID
+  partner.logo,         // File attachment dari PocketBase
+  'https://fallback.com/logo.png' // Fallback URL
+);
+
+<img src={imageUrl} alt={partner.name} />
 ```
 
 ---
@@ -144,6 +163,8 @@ export default function Tentang() {
 | Gradient tidak muncul | Ini by design! Lihat section Gradient Exception |
 | CORS error | Pastikan PocketBase allow frontend origin |
 | Icon tidak muncul | Cek icon_name match dengan iconMap |
+| File attachment tidak muncul | Gunakan `getPocketBaseFileUrlOrFallback()` untuk generate URL |
+| Image broken | Pastikan collection ID dan record ID benar, atau gunakan fallback URL |
 
 ---
 

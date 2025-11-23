@@ -21,7 +21,7 @@ const products: ProductVariant[] = [
     height: "±65 cm",
     diameter: "±14 cm",
     weight: "12 Kg",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/c0f7fe625f770739cb8ee0b97eb86d30f4883e9e?width=1010",
+    image: "/1m3.png",
   },
   {
     id: "2",
@@ -30,7 +30,7 @@ const products: ProductVariant[] = [
     height: "±100 cm",
     diameter: "±16 cm",
     weight: "23 Kg",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/c0f7fe625f770739cb8ee0b97eb86d30f4883e9e?width=1010",
+    image: "/2m3.png",
   },
   {
     id: "3",
@@ -39,7 +39,7 @@ const products: ProductVariant[] = [
     height: "±150 cm",
     diameter: "±22 cm",
     weight: "56 Kg",
-    image: "https://api.builder.io/api/v1/image/assets/TEMP/c0f7fe625f770739cb8ee0b97eb86d30f4883e9e?width=1010",
+    image: "/6m3.png",
   },
 ];
 
@@ -65,9 +65,7 @@ export default function Produk() {
   };
 
   const handleOrder = () => {
-    const message = `Halo, saya tertarik untuk memesan tabung oksigen ${currentProduct.capacity} dengan harga ${formatPrice(currentProduct.price)}.`;
-    const whatsappUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
+    window.open("https://wa.link/dxfoj1", "_blank");
   };
 
   const nextImage = () => {

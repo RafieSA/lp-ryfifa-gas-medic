@@ -109,11 +109,16 @@ export default function Tentang() {
                   background: 'linear-gradient(#ECF3F8, #ECF3F8) padding-box, linear-gradient(100deg, #418BB4 12.34%, #244C63 87.66%) border-box',
                 }}
               >
-                <img
-                  src="https://api.builder.io/api/v1/image/assets/TEMP/b5cab05859c6a15ab648676550fc2ed0dbc9a39f?width=812"
-                  alt="Company operations"
+                <video
+                  src="/tiga.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   className="w-full h-full object-cover"
-                />
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
 
               <div className="space-y-8 lg:space-y-12 lg:max-w-[733px]">

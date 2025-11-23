@@ -21,11 +21,11 @@ export default function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-primary-blue-800/95 backdrop-blur-sm shadow-lg">
       <nav className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-20 py-4 sm:py-5 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-2 sm:gap-3" onClick={() => setMobileMenuOpen(false)}>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-gradient-to-br from-primary-blue-500 to-primary-blue-800 flex items-center justify-center flex-shrink-0 border-2 border-white/20">
-            <span className="text-white font-jakarta font-bold text-lg sm:text-xl">
-              {settingsData?.company_name ? settingsData.company_name.charAt(0) : 'R'}
-            </span>
-          </div>
+          <img
+            src="/Logo.png"
+            alt={settingsData?.company_name || 'RYFIFA Gas Medic'}
+            className="w-10 h-10 sm:w-12 sm:h-12 object-contain flex-shrink-0"
+          />
           <span className="text-neutral-white font-jakarta font-bold text-xl sm:text-2xl lg:text-3xl leading-tight">
             {settingsData?.company_name || 'RYFIFA Gas Medic'}
           </span>

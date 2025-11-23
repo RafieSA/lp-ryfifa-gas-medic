@@ -26,6 +26,27 @@
  * getAboutSection(section) - Ambil data tentang perusahaan
  * getAllAbout() - Ambil semua data tentang perusahaan
  * 
+ * UTILITY FUNCTIONS UNTUK FILE ATTACHMENTS:
+ * =========================================
+ * 
+ * getPocketBaseFileUrl(collectionId, recordId, filename) - Generate URL untuk file attachment
+ * getPocketBaseFileUrlOrFallback(...) - Generate URL dengan fallback jika file tidak ada
+ * 
+ * Contoh penggunaan file attachments:
+ * ```tsx
+ * import { getPocketBaseFileUrlOrFallback } from '@/lib/pocketbase';
+ * 
+ * // Di component
+ * const logoUrl = getPocketBaseFileUrlOrFallback(
+ *   'partners',
+ *   partner.id,
+ *   partner.logo, // File attachment dari PocketBase (bisa string atau array)
+ *   'https://fallback-url.com/logo.png' // Fallback jika tidak ada
+ * );
+ * 
+ * <img src={logoUrl} alt={partner.name} />
+ * ```
+ * 
  * FORMAT RESPONSE POCKETBASE:
  * ==========================
  * PocketBase mengembalikan data dalam format:
@@ -60,6 +81,78 @@
 const POCKETBASE_URL = 'https://lp-rgm.eastasia.cloudapp.azure.com';
 
 /**
+ * Utility function untuk mendapatkan URL file dari PocketBase
+ * 
+ * PocketBase menyimpan file attachments dan format URL-nya adalah:
+ * https://pocketbase-url/api/files/collection_id/record_id/filename
+ * 
+ * @param collectionId - Nama collection (contoh: 'partners', 'products', 'settings')
+ * @param recordId - ID record yang memiliki file
+ * @param filename - Nama file (bisa berupa string atau array of strings)
+ * @returns URL lengkap untuk mengakses file, atau null jika tidak ada file
+ * 
+ * @example
+ * // Single file
+ * const logoUrl = getPocketBaseFileUrl('partners', 'abc123', 'logo.png');
+ * // Returns: https://lp-rgm.eastasia.cloudapp.azure.com/api/files/partners/abc123/logo.png
+ * 
+ * @example
+ * // Multiple files (ambil yang pertama)
+ * const imageUrl = getPocketBaseFileUrl('products', 'xyz789', ['image1.jpg', 'image2.jpg']);
+ * // Returns: https://lp-rgm.eastasia.cloudapp.azure.com/api/files/products/xyz789/image1.jpg
+ */
+export function getPocketBaseFileUrl(
+  collectionId: string,
+  recordId: string,
+  filename: string | string[] | null | undefined
+): string | null {
+  if (!filename) return null;
+  
+  // Jika array, ambil yang pertama
+  const file = Array.isArray(filename) ? filename[0] : filename;
+  
+  if (!file || file.trim() === '') return null;
+  
+  // Jika sudah URL lengkap (eksternal), return langsung
+  if (file.startsWith('http://') || file.startsWith('https://')) {
+    return file;
+  }
+  
+  // Generate URL untuk file attachment PocketBase
+  return `${POCKETBASE_URL}/api/files/${collectionId}/${recordId}/${file}`;
+}
+
+/**
+ * Utility function untuk mendapatkan URL file dari PocketBase dengan fallback
+ * 
+ * Mencoba mendapatkan file dari PocketBase attachment, jika tidak ada atau error,
+ * akan menggunakan fallback URL yang diberikan.
+ * 
+ * @param collectionId - Nama collection
+ * @param recordId - ID record yang memiliki file
+ * @param filename - Nama file dari PocketBase (bisa string, array, atau null)
+ * @param fallbackUrl - URL fallback jika file tidak tersedia
+ * @returns URL file dari PocketBase atau fallback URL
+ * 
+ * @example
+ * const imageUrl = getPocketBaseFileUrlOrFallback(
+ *   'products',
+ *   product.id,
+ *   product.image, // File attachment dari PocketBase
+ *   'https://example.com/default-image.jpg' // Fallback
+ * );
+ */
+export function getPocketBaseFileUrlOrFallback(
+  collectionId: string,
+  recordId: string,
+  filename: string | string[] | null | undefined,
+  fallbackUrl: string
+): string {
+  const fileUrl = getPocketBaseFileUrl(collectionId, recordId, filename);
+  return fileUrl || fallbackUrl;
+}
+
+/**
  * Tipe data untuk settings dari PocketBase
  */
 export interface Settings {
@@ -70,6 +163,7 @@ export interface Settings {
   email: string;
   facebook_url: string;
   logo_url: string;
+  logo?: string | string[]; // File attachment dari PocketBase (optional)
   favicon_url: string;
   meta_title: string;
   meta_description: string;

@@ -36,20 +36,24 @@ Berisi custom hooks yang menggunakan React Query untuk:
 
 1. **settings** - Konfigurasi perusahaan
    - company_name, tagline, contact info, social media
+   - **File attachments**: logo, favicon, hero_image, map_image
 
 2. **benefits** - Keunggulan layanan
    - icon_name (pilihan: Award, Package, Truck, Wrench, DollarSign, Clock)
    - title, description, order, is_active
 
 3. **partners** - Mitra perusahaan
-   - name, logo_url, website_url, order
+   - name, logo_url (bisa URL eksternal atau file attachment), website_url, order
+   - **File attachments**: logo (jika menggunakan file attachment PocketBase)
 
 4. **products** - Produk tabung oksigen
-   - capacity, price, height, diameter, weight, image_url, description, is_avail
+   - capacity, price, height, diameter, weight, image_url (bisa URL eksternal atau file attachment), description, is_avail
+   - **File attachments**: image (jika menggunakan file attachment PocketBase)
 
 5. **hero_sections** - Hero section per halaman
    - field (home/tentang/produk/kontak)
    - title, subtitle, CTA buttons, background settings
+   - **File attachments**: background_image (jika menggunakan file attachment PocketBase)
 
 6. **contact** - Informasi kontak
    - whatsapp_number, email, address, phone
@@ -57,6 +61,7 @@ Berisi custom hooks yang menggunakan React Query untuk:
 7. **about** - Konten halaman tentang
    - section (story/vision/mission/values)
    - title, content, order
+   - **File attachments**: image (jika ada gambar untuk section tertentu)
 
 ## Cara Menggunakan Custom Hooks
 
@@ -64,6 +69,7 @@ Berisi custom hooks yang menggunakan React Query untuk:
 
 ```tsx
 import { useBenefits, usePartners, useProducts, useHeroSection, useSettings, useContact, useAboutSection } from "@/hooks/use-pocketbase";
+import { getPocketBaseFileUrlOrFallback } from "@/lib/pocketbase";
 ```
 
 ### Mengambil Data dalam Komponen
@@ -99,6 +105,120 @@ function MyComponent() {
   );
 }
 ```
+
+## Menggunakan File Attachments (Aspek) dari PocketBase
+
+PocketBase mendukung penyimpanan file attachments langsung di database. File-file ini bisa berupa gambar, dokumen, atau file lainnya yang di-upload melalui admin panel PocketBase.
+
+### Format File di PocketBase
+
+File attachments di PocketBase bisa berupa:
+- **String** - Single file: `"logo.png"`
+- **Array of strings** - Multiple files: `["image1.jpg", "image2.jpg"]`
+- **Null/undefined** - Tidak ada file
+
+### Cara Menggunakan File Attachments
+
+#### 1. Import Utility Function
+
+```tsx
+import { getPocketBaseFileUrl, getPocketBaseFileUrlOrFallback } from "@/lib/pocketbase";
+```
+
+#### 2. Menggunakan di Komponen
+
+**Contoh 1: Partner Logo dengan File Attachment**
+
+```tsx
+import { usePartners } from "@/hooks/use-pocketbase";
+import { getPocketBaseFileUrlOrFallback } from "@/lib/pocketbase";
+
+function PartnersSection() {
+  const { data: partners } = usePartners();
+  
+  return (
+    <div>
+      {partners?.map(partner => {
+        // Jika partner.logo adalah file attachment dari PocketBase
+        const logoUrl = getPocketBaseFileUrlOrFallback(
+          'partners',        // Collection ID
+          partner.id,        // Record ID
+          partner.logo,      // File attachment (bisa string, array, atau null)
+          'https://fallback-url.com/default-logo.png' // Fallback URL
+        );
+        
+        return (
+          <img 
+            key={partner.id}
+            src={logoUrl} 
+            alt={partner.name} 
+          />
+        );
+      })}
+    </div>
+  );
+}
+```
+
+**Contoh 2: Product Image dengan File Attachment**
+
+```tsx
+import { useProducts } from "@/hooks/use-pocketbase";
+import { getPocketBaseFileUrlOrFallback } from "@/lib/pocketbase";
+
+function ProductsSection() {
+  const { data: products } = useProducts();
+  
+  return (
+    <div>
+      {products?.map(product => {
+        // Handle file attachment atau URL eksternal
+        const imageUrl = getPocketBaseFileUrlOrFallback(
+          'products',
+          product.id,
+          product.image, // File attachment dari PocketBase
+          product.image_url || 'https://default-image.com/product.jpg' // Fallback
+        );
+        
+        return (
+          <div key={product.id}>
+            <img src={imageUrl} alt={product.capacity} />
+            <h3>{product.capacity}</h3>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+```
+
+**Contoh 3: Multiple Files (Ambil yang Pertama)**
+
+```tsx
+// Jika PocketBase mengembalikan array of files
+const imageUrl = getPocketBaseFileUrlOrFallback(
+  'products',
+  product.id,
+  product.images, // Array: ["image1.jpg", "image2.jpg"]
+  'https://default.jpg'
+);
+// Akan menggunakan image1.jpg (file pertama)
+```
+
+### Keuntungan Menggunakan File Attachments
+
+1. **Centralized Storage** - Semua file tersimpan di PocketBase
+2. **Automatic URL Generation** - URL otomatis di-generate oleh PocketBase
+3. **File Management** - Mudah di-manage melalui admin panel
+4. **Fallback Support** - Tetap bisa menggunakan URL eksternal sebagai fallback
+5. **Type Safety** - Mendukung string, array, atau null
+
+### Catatan Penting
+
+- Jika field sudah berisi URL lengkap (dimulai dengan `http://` atau `https://`), function akan return URL tersebut langsung
+- Jika field adalah file attachment PocketBase (hanya nama file), function akan generate URL lengkap
+- Function `getPocketBaseFileUrlOrFallback` selalu return string (tidak pernah null), karena ada fallback
+- Function `getPocketBaseFileUrl` bisa return `null` jika tidak ada file
 
 ## Pattern yang Sudah Diimplementasikan
 
@@ -295,6 +415,50 @@ import { useBenefits, usePartners, useHeroSection, useSettings, useContact } fro
 
 ### 5. Gradient Tidak Muncul di Hero Title
 Ini adalah behavior yang diinginkan! Hero title tetap hardcoded untuk maintain design consistency. Lihat section "Design Gradient Special Case" untuk penjelasan lengkap.
+
+### 6. File Attachment Tidak Muncul
+Pastikan:
+- Collection ID benar (contoh: 'partners', 'products', 'settings')
+- Record ID benar (gunakan `record.id` dari data PocketBase)
+- Field name benar (contoh: `partner.logo`, `product.image`)
+- File sudah di-upload di PocketBase admin panel
+- Gunakan `getPocketBaseFileUrlOrFallback()` untuk handle fallback
+
+### 7. URL File Attachment Salah
+Format URL yang benar:
+```
+https://lp-rgm.eastasia.cloudapp.azure.com/api/files/{collection_id}/{record_id}/{filename}
+```
+
+Pastikan:
+- Collection ID menggunakan nama collection (bukan ID)
+- Record ID menggunakan ID record (bukan nama)
+- Filename adalah nama file yang di-return dari PocketBase API
+
+---
+
+## Quick Reference: File Attachments
+
+### Import
+```tsx
+import { getPocketBaseFileUrlOrFallback } from "@/lib/pocketbase";
+```
+
+### Basic Usage
+```tsx
+const imageUrl = getPocketBaseFileUrlOrFallback(
+  'collection_name',
+  record.id,
+  record.file_field,
+  'fallback-url.jpg'
+);
+```
+
+### Collections & Common Fields
+- **partners**: `logo` (file attachment)
+- **products**: `image` (file attachment)
+- **settings**: `logo`, `favicon`, `hero_image`, `map_image` (file attachments)
+- **hero_sections**: `background_image` (file attachment)
 
 ---
 

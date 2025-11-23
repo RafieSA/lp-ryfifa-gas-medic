@@ -13,10 +13,8 @@ export default function Kontak() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Format pesan untuk WhatsApp
-    const message = `Halo, saya ${formData.nama}.\n\nAlamat: ${formData.alamat}\n\nPesan: ${formData.pesan}`;
-    const whatsappUrl = `https://wa.me/${formData.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
+    // Mengarah ke link WhatsApp yang sama dengan tombol lainnya
+    window.open("https://wa.link/dxfoj1", "_blank");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

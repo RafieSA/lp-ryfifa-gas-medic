@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Mail, MessageCircle, Facebook } from "lucide-react";
 import { useSettings } from "@/hooks/use-pocketbase";
 
 const navItems = [
@@ -51,16 +50,27 @@ export default function Footer() {
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
             aria-label="Email"
           >
-            <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-primary-blue-800" />
+            <img
+              src="/Icon=Gmail.png"
+              alt="Gmail"
+              className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+            />
           </a>
           <a
-            href={`https://wa.me/${settingsData?.whatsapp_number?.replace(/\D/g, '') || '6281234567890'}`}
+            href="https://wa.link/dxfoj1"
             target="_blank"
             rel="noopener noreferrer"
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
             aria-label="WhatsApp"
           >
-            <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6 text-[#34A853]" />
+            <img
+              src="/Icon=Whatsapp.png"
+              alt="WhatsApp"
+              className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+              style={{
+                filter: 'brightness(0.5) contrast(1.3)',
+              }}
+            />
           </a>
           <a
             href={settingsData?.facebook_url || "https://facebook.com"}
@@ -69,7 +79,11 @@ export default function Footer() {
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white flex items-center justify-center hover:bg-primary-blue-50 transition-colors shadow-md"
             aria-label="Facebook"
           >
-            <Facebook className="w-5 h-5 sm:w-6 sm:h-6 text-[#3D6AD6]" />
+            <img
+              src="/Icon=Facebook.png"
+              alt="Facebook"
+              className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
+            />
           </a>
         </div>
 
