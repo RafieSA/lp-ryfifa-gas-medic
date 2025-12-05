@@ -459,15 +459,21 @@ export default function Index() {
                 Temukan lokasi kami di peta dan kunjungi kami untuk layanan oksigen medis terbaik
               </p>
               {/* Debug button - Hapus setelah testing */}
-              <button
-                onClick={() => {
-                  console.log('Test button clicked, toggling popup');
-                  setShowMapPopup(!showMapPopup);
-                }}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Test Popup (Current: {showMapPopup ? 'ON' : 'OFF'})
-              </button>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log('Test button clicked, toggling popup');
+                    setShowMapPopup(!showMapPopup);
+                  }}
+                  className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-jakarta font-bold text-sm shadow-lg transition-colors"
+                >
+                  Test Popup (Current: {showMapPopup ? 'ON' : 'OFF'})
+                </button>
+                <p className="mt-2 text-xs text-neutral-dark">
+                  Klik tombol di atas atau klik di area gambar map untuk membuka popup
+                </p>
+              </div>
             </div>
 
             <div className="max-w-[1280px] mx-auto">
