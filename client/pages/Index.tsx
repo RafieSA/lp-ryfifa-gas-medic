@@ -204,7 +204,12 @@ export default function Index() {
 
   // Gunakan data dari PocketBase jika ada, gunakan fallback jika error atau tidak ada data
   const benefitsData = benefits && Array.isArray(benefits) && benefits.length > 0 ? benefits : fallbackBenefits;
-  const partnersData = partners && Array.isArray(partners) && partners.length > 0 ? partners : fallbackPartners;
+  
+  // Validasi partners: pastikan website_url valid, jika tidak gunakan fallback
+  const validPartners = partners && Array.isArray(partners) && partners.length > 0 
+    ? partners.filter(p => p.website_url && p.website_url.trim() !== '')
+    : [];
+  const partnersData = validPartners.length > 0 ? validPartners : fallbackPartners;
   const settingsData = settings && Array.isArray(settings) && settings.length > 0 ? settings[0] : fallbackSettings;
   const heroData = heroSection && Array.isArray(heroSection) && heroSection.length > 0 ? heroSection[0] : fallbackHeroSection;
   const contactData = contact && Array.isArray(contact) && contact.length > 0 ? contact[0] : null;
@@ -356,21 +361,44 @@ export default function Index() {
 
             {/* Partners Section - Menggunakan data dari PocketBase atau fallback */}
             <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 lg:gap-8 max-w-[1280px] mx-auto">
-              {partnersData && Array.isArray(partnersData) && partnersData.map((partner: PocketBasePartner) => (
-                <a
-                  key={partner.id}
-                  href={partner.website_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)] transition-all duration-300 hover:shadow-2xl hover:scale-110 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer"
-                >
-                  <img
-                    src={partner.logo_url}
-                    alt={partner.name}
-                    className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain transition-all duration-300 group-hover:brightness-0 group-hover:invert"
-                  />
-                </a>
-              ))}
+              {partnersData && Array.isArray(partnersData) && partnersData.map((partner: PocketBasePartner) => {
+                // Pastikan URL selalu valid dan external
+                const getValidUrl = (url: string | undefined): string => {
+                  if (!url || url.trim() === '') return '#';
+                  // Jika sudah memiliki protocol, return langsung
+                  if (url.startsWith('http://') || url.startsWith('https://')) {
+                    return url;
+                  }
+                  // Jika tidak ada protocol, tambahkan https://
+                  return `https://${url}`;
+                };
+
+                const partnerUrl = getValidUrl(partner.website_url);
+                const isExternalLink = partnerUrl !== '#' && (partnerUrl.startsWith('http://') || partnerUrl.startsWith('https://'));
+
+                return (
+                  <a
+                    key={partner.id}
+                    href={partnerUrl}
+                    target={isExternalLink ? "_blank" : undefined}
+                    rel={isExternalLink ? "noopener noreferrer" : undefined}
+                    onClick={(e) => {
+                      // Pastikan link external tidak di-intercept oleh React Router
+                      if (isExternalLink) {
+                        e.preventDefault();
+                        window.open(partnerUrl, '_blank', 'noopener,noreferrer');
+                      }
+                    }}
+                    className="group bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)] transition-all duration-300 hover:shadow-2xl hover:scale-110 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer"
+                  >
+                    <img
+                      src={partner.logo_url}
+                      alt={partner.name}
+                      className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain transition-all duration-300 group-hover:brightness-0 group-hover:invert"
+                    />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
