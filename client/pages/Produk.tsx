@@ -64,7 +64,7 @@ export default function Produk() {
   };
 
   const handleOrder = () => {
-    window.open("https://wa.link/dxfoj1", "_blank");
+    window.open("https://wa.me/6285325946992", "_blank");
   };
 
   const nextProduct = () => {

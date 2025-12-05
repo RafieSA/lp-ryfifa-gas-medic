@@ -168,7 +168,7 @@ const fallbackSettings = {
   id: "fallback",
   company_name: "RYFIFA Gas Medic",
   tagline: "Solusi Oksigen Medis Terbaik",
-  whatsapp_number: "6281234567890",
+  whatsapp_number: "6285325946992",
   email: "info@ryfifagasmedic.com",
   facebook_url: "https://facebook.com",
   logo_url: "",
@@ -269,7 +269,7 @@ export default function Index() {
                 {/* Call to Action Buttons - Menggunakan WhatsApp link */}
                 <div className="flex flex-wrap gap-4 sm:gap-6">
                   <a
-                    href="https://wa.link/dxfoj1"
+                    href="https://wa.me/6285325946992"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-lg bg-gradient-primary text-neutral-white font-jakarta font-bold text-base sm:text-lg leading-[26px] shadow-lg hover:shadow-xl hover:scale-105 transition-all"
