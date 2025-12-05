@@ -196,6 +196,9 @@ const fallbackHeroSection = {
 export default function Index() {
   // State untuk mengontrol visibility popup map
   const [showMapPopup, setShowMapPopup] = useState(false);
+  
+  // Debug: log state changes
+  console.log('Component rendered, showMapPopup:', showMapPopup);
 
   // Mengambil data dari PocketBase menggunakan custom hooks
   const { data: benefits, isLoading: benefitsLoading, error: benefitsError } = useBenefits();
@@ -455,16 +458,42 @@ export default function Index() {
               <p className="font-nunito text-base sm:text-lg lg:text-xl leading-relaxed sm:leading-8 text-neutral-dark">
                 Temukan lokasi kami di peta dan kunjungi kami untuk layanan oksigen medis terbaik
               </p>
+              {/* Debug button - Hapus setelah testing */}
+              <button
+                onClick={() => {
+                  console.log('Test button clicked, toggling popup');
+                  setShowMapPopup(!showMapPopup);
+                }}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+              >
+                Test Popup (Current: {showMapPopup ? 'ON' : 'OFF'})
+              </button>
             </div>
 
             <div className="max-w-[1280px] mx-auto">
               <div 
-                className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[704px] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={(e) => {
-                  console.log('Map clicked!', showMapPopup);
-                  setShowMapPopup(true);
-                }}
+                className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[704px] rounded-2xl overflow-hidden"
               >
+                {/* Clickable overlay untuk map */}
+                <div
+                  className="absolute inset-0 cursor-pointer z-10 bg-transparent"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('=== MAP CLICKED ===');
+                    console.log('Current showMapPopup state:', showMapPopup);
+                    const newState = !showMapPopup;
+                    console.log('Setting to:', newState);
+                    setShowMapPopup(newState);
+                    console.log('State updated');
+                  }}
+                  onMouseEnter={() => console.log('Mouse entered map area')}
+                  onMouseDown={() => console.log('Mouse down on map')}
+                  style={{ 
+                    touchAction: 'manipulation',
+                    WebkitTapHighlightColor: 'transparent'
+                  }}
+                />
                 <img
                   src={settingsData?.map_url || "https://api.builder.io/api/v1/image/assets/TEMP/0f11fb8529021e77b1a64edf21e87e989389761f?width=2560"}
                   alt="Lokasi {settingsData?.company_name || 'RYFIFA Gas Medic'}"
@@ -481,7 +510,9 @@ export default function Index() {
                 {showMapPopup && (
                   <div 
                     className="absolute inset-0 bg-black/20 z-40"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       console.log('Backdrop clicked, closing popup');
                       setShowMapPopup(false);
                     }}
@@ -493,11 +524,12 @@ export default function Index() {
                   <div 
                     className="absolute top-[calc(50%-120px)] left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl p-4 sm:p-5 max-w-[280px] sm:max-w-[320px] z-50"
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       console.log('Popup clicked, preventing close');
                     }}
                     style={{
-                      animation: 'fadeIn 0.3s ease-in-out',
+                      display: 'block',
                     }}
                   >
                     {/* Close button */}
