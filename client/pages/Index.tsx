@@ -460,12 +460,15 @@ export default function Index() {
             <div className="max-w-[1280px] mx-auto">
               <div 
                 className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[704px] rounded-2xl overflow-hidden cursor-pointer"
-                onClick={() => setShowMapPopup(true)}
+                onClick={(e) => {
+                  console.log('Map clicked!', showMapPopup);
+                  setShowMapPopup(true);
+                }}
               >
                 <img
                   src={settingsData?.map_url || "https://api.builder.io/api/v1/image/assets/TEMP/0f11fb8529021e77b1a64edf21e87e989389761f?width=2560"}
                   alt="Lokasi {settingsData?.company_name || 'RYFIFA Gas Medic'}"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover pointer-events-none"
                 />
                 {/* Map Pin Marker */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
@@ -474,11 +477,28 @@ export default function Index() {
                   </svg>
                 </div>
                 
+                {/* Overlay backdrop - Muncul saat popup aktif */}
+                {showMapPopup && (
+                  <div 
+                    className="absolute inset-0 bg-black/20 z-40"
+                    onClick={() => {
+                      console.log('Backdrop clicked, closing popup');
+                      setShowMapPopup(false);
+                    }}
+                  />
+                )}
+                
                 {/* Popup Box - Muncul saat map diklik */}
                 {showMapPopup && (
                   <div 
-                    className="absolute top-[calc(50%-120px)] left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl p-4 sm:p-5 max-w-[280px] sm:max-w-[320px] z-20 animate-in fade-in slide-in-from-bottom-2 duration-300"
-                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-[calc(50%-120px)] left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl p-4 sm:p-5 max-w-[280px] sm:max-w-[320px] z-50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('Popup clicked, preventing close');
+                    }}
+                    style={{
+                      animation: 'fadeIn 0.3s ease-in-out',
+                    }}
                   >
                     {/* Close button */}
                     <div className="flex items-start justify-between mb-2">
@@ -486,7 +506,11 @@ export default function Index() {
                         {settingsData?.company_name || 'RYFIFA Gas Medic'}
                       </h3>
                       <button
-                        onClick={() => setShowMapPopup(false)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log('Close button clicked');
+                          setShowMapPopup(false);
+                        }}
                         className="flex-shrink-0 w-6 h-6 rounded-full hover:bg-neutral-100 flex items-center justify-center transition-colors"
                         aria-label="Tutup popup"
                       >
