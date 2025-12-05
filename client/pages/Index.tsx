@@ -196,9 +196,6 @@ const fallbackHeroSection = {
 export default function Index() {
   // State untuk mengontrol visibility popup map
   const [showMapPopup, setShowMapPopup] = useState(false);
-  
-  // Debug: log state changes
-  console.log('Component rendered, showMapPopup:', showMapPopup);
 
   // Mengambil data dari PocketBase menggunakan custom hooks
   const { data: benefits, isLoading: benefitsLoading, error: benefitsError } = useBenefits();
@@ -396,8 +393,6 @@ export default function Index() {
                 const partnerUrl = getValidUrl(partner.website_url);
                 const isExternalLink = partnerUrl !== '' && partnerUrl.startsWith('http');
 
-                // Debug log
-                console.log('Partner:', partner.name, 'URL:', partnerUrl, 'IsExternal:', isExternalLink);
 
                 // Jika tidak ada URL valid, jangan render sebagai link
                 if (!isExternalLink) {
@@ -424,10 +419,8 @@ export default function Index() {
                     rel="noopener noreferrer"
                     onClick={(e) => {
                       // Pastikan link benar-benar external dan tidak di-intercept
-                      console.log('Clicking partner link:', partnerUrl);
                       if (!partnerUrl || !partnerUrl.startsWith('http')) {
                         e.preventDefault();
-                        console.error('Invalid URL prevented:', partnerUrl);
                         return;
                       }
                       // Biarkan browser menangani link secara default
@@ -458,22 +451,6 @@ export default function Index() {
               <p className="font-nunito text-base sm:text-lg lg:text-xl leading-relaxed sm:leading-8 text-neutral-dark">
                 Temukan lokasi kami di peta dan kunjungi kami untuk layanan oksigen medis terbaik
               </p>
-              {/* Debug button - Hapus setelah testing */}
-              <div className="mt-4">
-                <button
-                  type="button"
-                  onClick={() => {
-                    console.log('Test button clicked, toggling popup');
-                    setShowMapPopup(!showMapPopup);
-                  }}
-                  className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-jakarta font-bold text-sm shadow-lg transition-colors"
-                >
-                  Test Popup (Current: {showMapPopup ? 'ON' : 'OFF'})
-                </button>
-                <p className="mt-2 text-xs text-neutral-dark">
-                  Klik tombol di atas atau klik di area gambar map untuk membuka popup
-                </p>
-              </div>
             </div>
 
             <div className="max-w-[1280px] mx-auto">
@@ -486,15 +463,8 @@ export default function Index() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('=== MAP CLICKED ===');
-                    console.log('Current showMapPopup state:', showMapPopup);
-                    const newState = !showMapPopup;
-                    console.log('Setting to:', newState);
-                    setShowMapPopup(newState);
-                    console.log('State updated');
+                    setShowMapPopup(true);
                   }}
-                  onMouseEnter={() => console.log('Mouse entered map area')}
-                  onMouseDown={() => console.log('Mouse down on map')}
                   style={{ 
                     touchAction: 'manipulation',
                     WebkitTapHighlightColor: 'transparent'
@@ -519,7 +489,6 @@ export default function Index() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      console.log('Backdrop clicked, closing popup');
                       setShowMapPopup(false);
                     }}
                   />
@@ -532,7 +501,6 @@ export default function Index() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      console.log('Popup clicked, preventing close');
                     }}
                     style={{
                       display: 'block',
@@ -546,7 +514,6 @@ export default function Index() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          console.log('Close button clicked');
                           setShowMapPopup(false);
                         }}
                         className="flex-shrink-0 w-6 h-6 rounded-full hover:bg-neutral-100 flex items-center justify-center transition-colors"
