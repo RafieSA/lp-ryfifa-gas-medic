@@ -144,15 +144,22 @@ const fallbackPartners = [
     id: "1",
     name: "Samator",
     logo_url: "https://api.builder.io/api/v1/image/assets/TEMP/93d81e4c45a2d3b118facb34e78f62dda3426dd5?width=650",
-    website_url: "https://samator.co.id",
+    website_url: "https://samatorgas.com/id/produk-layanan/produk-gas/gas-medis",
     order: 1,
   },
   {
     id: "2",
-    name: "Surya Gas",
+    name: "Surya Gas Group",
     logo_url: "https://api.builder.io/api/v1/image/assets/TEMP/53f9d04cd687f1af19827e68ace86610dcfbbeec?width=650",
-    website_url: "https://suryagas.com",
+    website_url: "https://www.suryagasindustri.com/home.html",
     order: 2,
+  },
+  {
+    id: "3",
+    name: "RSUD dr Rehatta",
+    logo_url: "https://via.placeholder.com/325x150/418BB4/FFFFFF?text=RSUD+dr+Rehatta",
+    website_url: "https://rsrehatta.jatengprov.go.id/",
+    order: 3,
   },
 ];
 
@@ -350,16 +357,19 @@ export default function Index() {
             {/* Partners Section - Menggunakan data dari PocketBase atau fallback */}
             <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 lg:gap-8 max-w-[1280px] mx-auto">
               {partnersData && Array.isArray(partnersData) && partnersData.map((partner: PocketBasePartner) => (
-                <div
+                <a
                   key={partner.id}
+                  href={partner.website_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="group bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)] transition-all duration-300 hover:shadow-2xl hover:scale-110 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer"
                 >
                   <img
                     src={partner.logo_url}
                     alt={partner.name}
-                    className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain transition-all duration-300"
+                    className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain transition-all duration-300 group-hover:brightness-0 group-hover:invert"
                   />
-                </div>
+                </a>
               ))}
             </div>
           </div>
