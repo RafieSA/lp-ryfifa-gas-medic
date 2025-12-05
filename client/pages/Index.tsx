@@ -70,8 +70,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useBenefits, usePartners, useHeroSection, useSettings, useContact } from "@/hooks/use-pocketbase";
 import { Benefit as PocketBaseBenefit, Partner as PocketBasePartner, Settings } from "@/lib/pocketbase";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 /**
  * Mapping icon name dari PocketBase ke icon file di public folder
@@ -193,6 +194,9 @@ const fallbackHeroSection = {
 };
 
 export default function Index() {
+  // State untuk mengontrol visibility popup map
+  const [showMapPopup, setShowMapPopup] = useState(false);
+
   // Mengambil data dari PocketBase menggunakan custom hooks
   const { data: benefits, isLoading: benefitsLoading, error: benefitsError } = useBenefits();
   const { data: partners, isLoading: partnersLoading, error: partnersError } = usePartners();
@@ -454,42 +458,57 @@ export default function Index() {
             </div>
 
             <div className="max-w-[1280px] mx-auto">
-              <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[704px] rounded-2xl overflow-hidden">
+              <div 
+                className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[704px] rounded-2xl overflow-hidden cursor-pointer"
+                onClick={() => setShowMapPopup(true)}
+              >
                 <img
                   src={settingsData?.map_url || "https://api.builder.io/api/v1/image/assets/TEMP/0f11fb8529021e77b1a64edf21e87e989389761f?width=2560"}
                   alt="Lokasi {settingsData?.company_name || 'RYFIFA Gas Medic'}"
                   className="w-full h-full object-cover"
                 />
                 {/* Map Pin Marker */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
                   <svg className="w-12 h-16 text-red-600" viewBox="0 0 45 64" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M22.5 30.4C20.3688 30.4 18.3249 29.5571 16.8179 28.0569C15.3109 26.5566 14.4643 24.5217 14.4643 22.4C14.4643 20.2783 15.3109 18.2434 16.8179 16.7431C18.3249 15.2429 20.3688 14.4 22.5 14.4C24.6312 14.4 26.6751 15.2429 28.1821 16.7431C29.6891 18.2434 30.5357 20.2783 30.5357 22.4C30.5357 23.4506 30.3279 24.4909 29.924 25.4615C29.5202 26.4321 28.9283 27.314 28.1821 28.0569C27.4359 28.7997 26.5501 29.389 25.5751 29.791C24.6002 30.1931 23.5553 30.4 22.5 30.4ZM22.5 0C16.5326 0 10.8097 2.35999 6.5901 6.56081C2.37053 10.7616 0 16.4592 0 22.4C0 39.2 22.5 64 22.5 64C22.5 64 45 39.2 45 22.4C45 16.4592 42.6295 10.7616 38.4099 6.56081C34.1903 2.35999 28.4674 0 22.5 0Z"/>
                   </svg>
                 </div>
                 
-                {/* Popup Box - Positioned above the pin */}
-                <a
-                  href="https://maps.app.goo.gl/M4XhQCZjxfMe8LUQ9"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="absolute top-[calc(50%-120px)] left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-lg p-4 sm:p-5 max-w-[280px] sm:max-w-[320px] hover:shadow-xl transition-all duration-300 hover:scale-105 z-10 cursor-pointer"
-                >
-                  {/* Close button (optional, bisa dihapus jika tidak diperlukan) */}
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className="font-jakarta font-bold text-base sm:text-lg text-neutral-black">
-                      {settingsData?.company_name || 'RYFIFA Gas Medic'}
-                    </h3>
+                {/* Popup Box - Muncul saat map diklik */}
+                {showMapPopup && (
+                  <div 
+                    className="absolute top-[calc(50%-120px)] left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl p-4 sm:p-5 max-w-[280px] sm:max-w-[320px] z-20 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {/* Close button */}
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-jakarta font-bold text-base sm:text-lg text-neutral-black pr-2">
+                        {settingsData?.company_name || 'RYFIFA Gas Medic'}
+                      </h3>
+                      <button
+                        onClick={() => setShowMapPopup(false)}
+                        className="flex-shrink-0 w-6 h-6 rounded-full hover:bg-neutral-100 flex items-center justify-center transition-colors"
+                        aria-label="Tutup popup"
+                      >
+                        <X className="w-4 h-4 text-neutral-600" />
+                      </button>
+                    </div>
+                    <p className="font-nunito text-xs sm:text-sm text-neutral-dark leading-relaxed mb-3">
+                      GW22+9MJ, Krajan, Kelet, Kec. Keling, Kabupaten Jepara, Jawa Tengah 59454
+                    </p>
+                    <a
+                      href="https://maps.app.goo.gl/M4XhQCZjxfMe8LUQ9"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-primary-blue-600 font-nunito font-semibold text-xs sm:text-sm hover:text-primary-blue-700 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                      <span>Buka di Google Maps</span>
+                    </a>
                   </div>
-                  <p className="font-nunito text-xs sm:text-sm text-neutral-dark leading-relaxed mb-3">
-                    GW22+9MJ, Krajan, Kelet, Kec. Keling, Kabupaten Jepara, Jawa Tengah 59454
-                  </p>
-                  <div className="flex items-center gap-2 text-primary-blue-600 font-nunito font-semibold text-xs sm:text-sm">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
-                    <span>Buka di Google Maps</span>
-                  </div>
-                </a>
+                )}
               </div>
             </div>
           </div>
