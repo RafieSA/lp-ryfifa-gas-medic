@@ -209,10 +209,17 @@ export default function Index() {
   const validPartners = partners && Array.isArray(partners) && partners.length > 0 
     ? partners.filter(p => {
         const url = p.website_url?.trim() || '';
-        return url !== '' && (url.startsWith('http://') || url.startsWith('https://'));
+        const isValid = url !== '' && (url.startsWith('http://') || url.startsWith('https://'));
+        if (!isValid) {
+          console.warn('Invalid partner URL, will use fallback:', p.name, 'URL:', url);
+        }
+        return isValid;
       })
     : [];
   const partnersData = validPartners.length > 0 ? validPartners : fallbackPartners;
+  
+  // Debug: log data yang digunakan
+  console.log('Partners data being used:', partnersData.map(p => ({ name: p.name, url: p.website_url })));
   const settingsData = settings && Array.isArray(settings) && settings.length > 0 ? settings[0] : fallbackSettings;
   const heroData = heroSection && Array.isArray(heroSection) && heroSection.length > 0 ? heroSection[0] : fallbackHeroSection;
   const contactData = contact && Array.isArray(contact) && contact.length > 0 ? contact[0] : null;
@@ -367,7 +374,10 @@ export default function Index() {
               {partnersData && Array.isArray(partnersData) && partnersData.map((partner: PocketBasePartner) => {
                 // Pastikan URL selalu valid dan external
                 const getValidUrl = (url: string | undefined): string => {
-                  if (!url || url.trim() === '') return '';
+                  if (!url || url.trim() === '') {
+                    console.warn('Empty URL for partner:', partner.name);
+                    return '';
+                  }
                   // Jika sudah memiliki protocol, return langsung
                   if (url.startsWith('http://') || url.startsWith('https://')) {
                     return url;
@@ -378,6 +388,9 @@ export default function Index() {
 
                 const partnerUrl = getValidUrl(partner.website_url);
                 const isExternalLink = partnerUrl !== '' && partnerUrl.startsWith('http');
+
+                // Debug log
+                console.log('Partner:', partner.name, 'URL:', partnerUrl, 'IsExternal:', isExternalLink);
 
                 // Jika tidak ada URL valid, jangan render sebagai link
                 if (!isExternalLink) {
@@ -395,36 +408,32 @@ export default function Index() {
                   );
                 }
 
+                // Gunakan tag <a> dengan href langsung untuk memastikan link bekerja
                 return (
-                  <div
+                  <a
                     key={partner.id}
+                    href={partnerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Pastikan link external tidak di-intercept oleh React Router
-                      if (isExternalLink && partnerUrl) {
-                        window.open(partnerUrl, '_blank', 'noopener,noreferrer');
-                      }
-                    }}
-                    className="group bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)] transition-all duration-300 hover:shadow-2xl hover:scale-110 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer"
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
+                      // Pastikan link benar-benar external dan tidak di-intercept
+                      console.log('Clicking partner link:', partnerUrl);
+                      if (!partnerUrl || !partnerUrl.startsWith('http')) {
                         e.preventDefault();
-                        e.stopPropagation();
-                        if (isExternalLink && partnerUrl) {
-                          window.open(partnerUrl, '_blank', 'noopener,noreferrer');
-                        }
+                        console.error('Invalid URL prevented:', partnerUrl);
+                        return;
                       }
+                      // Biarkan browser menangani link secara default
+                      // Tidak perlu preventDefault untuk link external
                     }}
+                    className="group bg-white rounded-2xl sm:rounded-[30px] p-6 sm:p-8 lg:p-10 shadow-[0_8px_16px_0_rgba(35,35,35,0.5)] transition-all duration-300 hover:shadow-2xl hover:scale-110 hover:-translate-y-2 hover:bg-neutral-black cursor-pointer no-underline"
                   >
                     <img
                       src={partner.logo_url}
                       alt={partner.name}
                       className="w-[200px] sm:w-[250px] lg:w-[325px] h-auto object-contain transition-all duration-300 group-hover:brightness-0 group-hover:invert"
                     />
-                  </div>
+                  </a>
                 );
               })}
             </div>
