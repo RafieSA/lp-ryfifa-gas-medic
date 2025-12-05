@@ -499,7 +499,7 @@ export default function Index() {
                   <div 
                     className="absolute top-[calc(50%-120px)] left-1/2 transform -translate-x-1/2 bg-white rounded-lg shadow-xl p-4 sm:p-5 max-w-[280px] sm:max-w-[320px] z-50"
                     onClick={(e) => {
-                      e.preventDefault();
+                      // Hanya stop propagation, jangan prevent default
                       e.stopPropagation();
                     }}
                     style={{
@@ -513,6 +513,7 @@ export default function Index() {
                       </h3>
                       <button
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           setShowMapPopup(false);
                         }}
@@ -529,7 +530,12 @@ export default function Index() {
                       href="https://maps.app.goo.gl/M4XhQCZjxfMe8LUQ9"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-primary-blue-600 font-nunito font-semibold text-xs sm:text-sm hover:text-primary-blue-700 transition-colors"
+                      onClick={(e) => {
+                        // Biarkan link bekerja secara normal
+                        e.stopPropagation();
+                        // Tidak perlu preventDefault untuk link external
+                      }}
+                      className="flex items-center gap-2 text-primary-blue-600 font-nunito font-semibold text-xs sm:text-sm hover:text-primary-blue-700 transition-colors cursor-pointer"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
