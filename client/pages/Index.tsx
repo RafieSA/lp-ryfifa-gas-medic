@@ -71,6 +71,7 @@ import Footer from "@/components/Footer";
 import { useBenefits, usePartners, useHeroSection, useSettings, useContact } from "@/hooks/use-pocketbase";
 import { Benefit as PocketBaseBenefit, Partner as PocketBasePartner, Settings } from "@/lib/pocketbase";
 import { Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 /**
  * Mapping icon name dari PocketBase ke icon file di public folder
@@ -253,12 +254,12 @@ export default function Index() {
                     </svg>
                   </a>
 
-                  <a
-                    href={heroData?.secondary_cta_url || '/produk'}
+                  <Link
+                    to={heroData?.secondary_cta_url || '/produk'}
                     className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-lg border-2 border-neutral-white/40 bg-transparent hover:bg-neutral-white/10 text-neutral-white font-jakarta font-bold text-base sm:text-lg leading-[26px] transition-all"
                   >
                     {heroData?.secondary_cta_text || 'Lihat Produk'}
-                  </a>
+                  </Link>
                 </div>
               </div>
 
