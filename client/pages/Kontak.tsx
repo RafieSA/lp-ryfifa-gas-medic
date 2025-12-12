@@ -14,7 +14,7 @@ export default function Kontak() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Mengarah ke link WhatsApp yang sama dengan tombol lainnya
-    window.open("https://wa.me/6285325946992", "_blank");
+    window.open("https://wa.link/dxfoj1", "_blank");
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
